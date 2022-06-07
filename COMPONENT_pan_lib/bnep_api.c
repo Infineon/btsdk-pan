@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021, Cypress Semiconductor Corporation (an Infineon company) or
+ * Copyright 2016-2022, Cypress Semiconductor Corporation (an Infineon company) or
  * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
  *
  * This software, including source code, documentation and related
@@ -106,11 +106,11 @@ tBNEP_RESULT bnep_register(tBNEP_REGISTER *p_reg_info)
             bnep_cb.my_bda[3] | bnep_cb.my_bda[4] | bnep_cb.my_bda[5]) != 0)
         {
             bnep_cb.got_my_bd_addr = TRUE;
-            WICED_BT_TRACE ("wiced_bt_dev_read_local_addr success");
+            WICED_BT_TRACE ("wiced_bt_dev_read_local_addr success\n");
         }
         else
         {
-            WICED_BT_TRACE ("wiced_bt_dev_read_local_addr: Not possible to read the Bd Address now");
+            WICED_BT_TRACE ("wiced_bt_dev_read_local_addr: Not possible to read the Bd Address now\n");
         }
     }
 
@@ -172,7 +172,7 @@ tBNEP_RESULT bnep_connect (BD_ADDR p_rem_bda,
     uint16_t          cid;
     tBNEP_CONN      *p_bcb = bnepu_find_bcb_by_bd_addr (p_rem_bda);
 
-    WICED_BT_TRACE ("bnep_connect()  BDA: %02x-%02x-%02x-%02x-%02x-%02x",
+    WICED_BT_TRACE ("bnep_connect()  BDA: %02x-%02x-%02x-%02x-%02x-%02x\n",
                      p_rem_bda[0], p_rem_bda[1], p_rem_bda[2],
                      p_rem_bda[3], p_rem_bda[4], p_rem_bda[5]);
 
@@ -213,7 +213,7 @@ tBNEP_RESULT bnep_connect (BD_ADDR p_rem_bda,
         /* Transition to the next appropriate state, waiting for connection confirm. */
         p_bcb->con_state = BNEP_STATE_SEC_CHECKING;
 
-        WICED_BT_TRACE ("BNEP initiating security procedures for src uuid 0x%x",
+        WICED_BT_TRACE ("BNEP initiating security procedures for src uuid 0x%x\n",
             p_bcb->src_uuid.uu.uuid16);
 
         bnep_sec_check_complete (p_bcb->rem_bda, FALSE, p_bcb, WICED_BT_SUCCESS);
@@ -230,7 +230,7 @@ tBNEP_RESULT bnep_connect (BD_ADDR p_rem_bda,
         }
         else
         {
-            WICED_BT_TRACE ("BNEP - Originate failed");
+            WICED_BT_TRACE ("BNEP - Originate failed\n");
             if (bnep_cb.p_conn_state_cb)
                 (*bnep_cb.p_conn_state_cb) (p_bcb->handle, p_bcb->rem_bda, BNEP_CONN_FAILED, FALSE);
             bnepu_release_bcb (p_bcb);

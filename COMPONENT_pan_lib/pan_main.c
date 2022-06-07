@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021, Cypress Semiconductor Corporation (an Infineon company) or
+ * Copyright 2016-2022, Cypress Semiconductor Corporation (an Infineon company) or
  * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
  *
  * This software, including source code, documentation and related
@@ -370,11 +370,11 @@ void pan_connect_state_cb (uint16_t handle, BD_ADDR rem_bda, tBNEP_RESULT result
     tPAN_CONN       *pcb;
     uint8_t            peer_role;
 
-    WICED_BT_TRACE ("pan_connect_state_cb - for handle %d, result %d", handle, result);
+    WICED_BT_TRACE ("pan_connect_state_cb - for handle %d, result %d\n", handle, result);
     pcb = pan_get_pcb_by_handle (handle);
     if (!pcb)
     {
-        WICED_BT_TRACE ("PAN State change indication for wrong handle %d", handle);
+        WICED_BT_TRACE ("PAN State change indication for wrong handle %d\n", handle);
         return;
     }
 
@@ -390,7 +390,7 @@ void pan_connect_state_cb (uint16_t handle, BD_ADDR rem_bda, tBNEP_RESULT result
             (pcb->con_flags & PAN_FLAGS_CONN_COMPLETED))
         {
             /* restore the original values */
-            WICED_BT_TRACE ("restoring the connection state to active");
+            WICED_BT_TRACE ("restoring the connection state to active\n");
             pcb->con_state = PAN_STATE_CONNECTED;
             pcb->con_flags &= (~PAN_FLAGS_CONN_COMPLETED);
 
@@ -589,20 +589,20 @@ void pan_data_buf_ind_cb (uint16_t handle,
     pcb = pan_get_pcb_by_handle (handle);
     if (!pcb)
     {
-        WICED_BT_TRACE ("PAN Data buffer indication for wrong handle %d", handle);
+        WICED_BT_TRACE ("PAN Data buffer indication for wrong handle %d\n", handle);
         return;
     }
 
     if (pcb->con_state != PAN_STATE_CONNECTED)
     {
-        WICED_BT_TRACE ("PAN Data indication in wrong state %d for handle %d", pcb->con_state, handle);
+        WICED_BT_TRACE ("PAN Data indication in wrong state %d for handle %d\n", pcb->con_state, handle);
         return;
     }
 
     p_data = data_buf;
     len    = buf_len;
 
-    WICED_BT_TRACE ("pan_data_buf_ind_cb - for handle %d, protocol 0x%x, length %d, ext %d",
+    WICED_BT_TRACE ("pan_data_buf_ind_cb - for handle %d, protocol 0x%x, length %d, ext %d\n",
         handle, protocol, len, ext);
 
    if (pcb->src_uuid == UUID_SERVCLASS_NAP)
@@ -615,7 +615,7 @@ void pan_data_buf_ind_cb (uint16_t handle,
     {
         if (dst[0] & 0x01)
         {
-            WICED_BT_TRACE ("PAN received broadcast packet on handle %d, src uuid 0x%x", handle, pcb->src_uuid);
+            WICED_BT_TRACE ("PAN received broadcast packet on handle %d, src uuid 0x%x\n", handle, pcb->src_uuid);
             for (i=0; i<MAX_PAN_CONNS; i++)
             {
                 if (pan_cb.pcb[i].con_state == PAN_STATE_CONNECTED &&
@@ -638,10 +638,10 @@ void pan_data_buf_ind_cb (uint16_t handle,
         dst_pcb = pan_get_pcb_by_addr (dst);
         if (dst_pcb)
         {
-            WICED_BT_TRACE ("pan_data_buf_ind_cb - destination PANU found and sending the data");
+            WICED_BT_TRACE ("pan_data_buf_ind_cb - destination PANU found and sending the data\n");
             result = bnep_write (dst_pcb->handle, dst, p_data, len, protocol, src, ext);
             if (result != BNEP_SUCCESS && result != BNEP_IGNORE_CMD)
-                WICED_BT_TRACE ("Failed to write data for PAN connection handle %d", dst_pcb->handle);
+                WICED_BT_TRACE ("Failed to write data for PAN connection handle %d\n", dst_pcb->handle);
             return;
         }
     }

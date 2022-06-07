@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021, Cypress Semiconductor Corporation (an Infineon company) or
+ * Copyright 2016-2022, Cypress Semiconductor Corporation (an Infineon company) or
  * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
  *
  * This software, including source code, documentation and related
@@ -73,7 +73,7 @@ static void bnep_congestion_ind (void *context, uint16_t l2cap_cid, BOOLEAN is_c
 *******************************************************************************/
 tBNEP_RESULT bnep_register_with_l2cap (void)
 {
-    WICED_BT_TRACE ("bnep_register_with_l2cap");
+    WICED_BT_TRACE ("bnep_register_with_l2cap\n");
     memset(&bnep_cb.reg_info, 0, sizeof(bnep_cb.reg_info));
 
     bnep_cb.reg_info.connected_cback         = bnep_connected_cb;
@@ -119,7 +119,7 @@ static void bnep_connected_cb(void *context, BD_ADDR bd_addr, uint16_t l2cap_cid
     else
     {
         //PANU
-        WICED_BT_TRACE ("p_bcb->con_state = %d, p_bcb->con_flags = 0x%x", p_bcb->con_state, p_bcb->con_flags);
+        WICED_BT_TRACE ("p_bcb->con_state = %d, p_bcb->con_flags = 0x%x\n", p_bcb->con_state, p_bcb->con_flags);
 
         if (p_bcb->con_state == BNEP_STATE_CONN_START)
         {
@@ -148,7 +148,7 @@ static void bnep_disconnect_ind (void *context, uint16_t l2cap_cid, BOOLEAN ack_
 {
     tBNEP_CONN    *p_bcb;
 
-    WICED_BT_TRACE ("bnep_disconnect_ind ack_needed = %d", ack_needed);
+    WICED_BT_TRACE ("bnep_disconnect_ind ack_needed = %d\n", ack_needed);
 
     if (ack_needed)
         wiced_bt_l2cap_disconnect_rsp(l2cap_cid);
@@ -156,11 +156,11 @@ static void bnep_disconnect_ind (void *context, uint16_t l2cap_cid, BOOLEAN ack_
     /* Find CCB based on CID */
     if ((p_bcb = bnepu_find_bcb_by_cid (l2cap_cid)) == NULL)
     {
-        WICED_BT_TRACE ("BNEP - Rcvd L2CAP disc, unknown CID: 0x%x", l2cap_cid);
+        WICED_BT_TRACE ("BNEP - Rcvd L2CAP disc, unknown CID: 0x%x\n", l2cap_cid);
         return;
     }
 
-    WICED_BT_TRACE ("BNEP - Rcvd L2CAP disc, CID: 0x%x", l2cap_cid);
+    WICED_BT_TRACE ("BNEP - Rcvd L2CAP disc, CID: 0x%x\n", l2cap_cid);
 
     /* Tell the user if he has a callback */
     if (p_bcb->con_state == BNEP_STATE_CONNECTED)
@@ -279,7 +279,7 @@ static void bnep_data_ind (void *context, uint16_t l2cap_cid, uint8_t *p_data, u
     /* Find CCB based on CID */
     if ((p_bcb = bnepu_find_bcb_by_cid (l2cap_cid)) == NULL)
     {
-        WICED_BT_TRACE ("BNEP - Rcvd L2CAP data, unknown CID: 0x%x", l2cap_cid);
+        WICED_BT_TRACE ("BNEP - Rcvd L2CAP data, unknown CID: 0x%x\n", l2cap_cid);
         return;
     }
 
@@ -289,7 +289,7 @@ static void bnep_data_ind (void *context, uint16_t l2cap_cid, uint8_t *p_data, u
     type &= 0x7f;
     if ((rem_len <= bnep_frame_hdr_sizes[type]) || (rem_len > BNEP_MTU_SIZE))
     {
-        WICED_BT_TRACE ("BNEP - rcvd frame, bad len: %d  type: 0x%02x", buf_len, type);
+        WICED_BT_TRACE ("BNEP - rcvd frame, bad len: %d  type: 0x%02x\n", buf_len, type);
         return;
     }
 
@@ -299,7 +299,7 @@ static void bnep_data_ind (void *context, uint16_t l2cap_cid, uint8_t *p_data, u
         (!(p_bcb->con_flags & BNEP_FLAGS_CONN_COMPLETED)) &&
         (type != BNEP_FRAME_CONTROL))
     {
-        WICED_BT_TRACE ("BNEP - Ignored L2CAP data while in state: %d, CID: 0x%x", p_bcb->con_state, l2cap_cid);
+        WICED_BT_TRACE ("BNEP - Ignored L2CAP data while in state: %d, CID: 0x%x\n", p_bcb->con_state, l2cap_cid);
 
         if (extension_present)
         {
@@ -335,11 +335,11 @@ static void bnep_data_ind (void *context, uint16_t l2cap_cid, uint8_t *p_data, u
 
     if (type > BNEP_FRAME_COMPRESSED_ETHERNET_DEST_ONLY)
     {
-        WICED_BT_TRACE ("BNEP - rcvd frame, unknown type: 0x%02x", type);
+        WICED_BT_TRACE ("BNEP - rcvd frame, unknown type: 0x%02x\n", type);
         return;
     }
 
-    WICED_BT_TRACE ("bnep_data_ind BNEP - rcv frame, type: %d len: %d Ext: %d", type, buf_len, extension_present);
+    WICED_BT_TRACE ("bnep_data_ind BNEP - rcv frame, type: %d len: %d Ext: %d\n", type, buf_len, extension_present);
 
     /* Initialize addresses to 'not supplied' */
     p_src_addr = p_dst_addr = NULL;
@@ -419,7 +419,7 @@ static void bnep_data_ind (void *context, uint16_t l2cap_cid, uint8_t *p_data, u
         /* if unknown extension present stop processing */
         if (ext_type)
         {
-            WICED_BT_TRACE ("Data extension type 0x%x found", ext_type);
+            WICED_BT_TRACE ("Data extension type 0x%x found\n", ext_type);
             break;
         }
 
@@ -467,12 +467,12 @@ void bnep_process_timeout(uint32_t param)
     tBNEP_CONN *p_bcb;
     p_bcb = (tBNEP_CONN *)param;
 
-    WICED_BT_TRACE ("BNEP - CCB timeout in state: %d  CID: 0x%x flags %x, re_transmit %d",
+    WICED_BT_TRACE ("BNEP - CCB timeout in state: %d  CID: 0x%x flags %x, re_transmit %d\n",
                        p_bcb->con_state, p_bcb->l2cap_cid, p_bcb->con_flags, p_bcb->re_transmits);
 
     if (p_bcb->con_state == BNEP_STATE_CONN_SETUP)
     {
-        WICED_BT_TRACE ("BNEP - CCB timeout in state: %d  CID: 0x%x",
+        WICED_BT_TRACE ("BNEP - CCB timeout in state: %d  CID: 0x%x\n",
                            p_bcb->con_state, p_bcb->l2cap_cid);
 
         if (!(p_bcb->con_flags & BNEP_FLAGS_IS_ORIG))
@@ -499,7 +499,7 @@ void bnep_process_timeout(uint32_t param)
     }
     else if (p_bcb->con_state != BNEP_STATE_CONNECTED)
     {
-        WICED_BT_TRACE ("BNEP - CCB timeout in state: %d  CID: 0x%x",
+        WICED_BT_TRACE ("BNEP - CCB timeout in state: %d  CID: 0x%x\n",
                            p_bcb->con_state, p_bcb->l2cap_cid);
         wiced_bt_l2cap_disconnect_req(p_bcb->l2cap_cid);
 

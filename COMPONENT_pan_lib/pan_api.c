@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021, Cypress Semiconductor Corporation (an Infineon company) or
+ * Copyright 2016-2022, Cypress Semiconductor Corporation (an Infineon company) or
  * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
  *
  * This software, including source code, documentation and related
@@ -150,13 +150,13 @@ tPAN_RESULT wiced_bt_pan_setrole (uint8_t role)
     }
 
     /* Register all the roles with SDP */
-    WICED_BT_TRACE ("wiced_bt_pan_setrole() called with role 0x%x", role);
+    WICED_BT_TRACE ("wiced_bt_pan_setrole() called with role 0x%x\n", role);
     /* Check if it is a shutdown request */
     if (role == PAN_ROLE_INACTIVE)
         pan_close_all_connections ();
 
     pan_cb.role = role;
-    WICED_BT_TRACE ("PAN role set to: %d", role);
+    WICED_BT_TRACE ("PAN role set to: %d\n", role);
     return PAN_SUCCESS;
 }
 
@@ -200,7 +200,7 @@ tPAN_RESULT wiced_bt_pan_connect(BD_ADDR rem_bda, uint8_t src_role, uint8_t dst_
     /* Check if PAN is active or not */
     if (!(pan_cb.role & src_role))
     {
-        WICED_BT_TRACE ("PAN is not active for the role %d", src_role);
+        WICED_BT_TRACE ("PAN is not active for the role %d\n", src_role);
         return PAN_FAILURE;
     }
 
@@ -210,7 +210,7 @@ tPAN_RESULT wiced_bt_pan_connect(BD_ADDR rem_bda, uint8_t src_role, uint8_t dst_
         (dst_role != PAN_ROLE_CLIENT && dst_role != PAN_ROLE_GN_SERVER
          && dst_role != PAN_ROLE_NAP_SERVER))
     {
-        WICED_BT_TRACE ("Either source %d or destination role %d is invalid",
+        WICED_BT_TRACE ("Either source %d or destination role %d is invalid\n",
                           src_role, dst_role);
         return PAN_FAILURE;
     }
@@ -228,7 +228,7 @@ tPAN_RESULT wiced_bt_pan_connect(BD_ADDR rem_bda, uint8_t src_role, uint8_t dst_
             ** because if there is already a connection we cannot accept
             ** another connection in PANU role
             */
-            WICED_BT_TRACE ("Can't make PANU conns when more than one connection");
+            WICED_BT_TRACE ("Can't make PANU conns when more than one connection\n");
             return PAN_INVALID_SRC_ROLE;
         }
 
@@ -251,7 +251,7 @@ tPAN_RESULT wiced_bt_pan_connect(BD_ADDR rem_bda, uint8_t src_role, uint8_t dst_
     {
         if (pan_cb.num_conns && pan_cb.active_role == PAN_ROLE_CLIENT && !pcb)
         {
-            WICED_BT_TRACE ("Device already have a connection in PANU role");
+            WICED_BT_TRACE ("Device already have a connection in PANU role\n");
             return PAN_INVALID_SRC_ROLE;
         }
 
@@ -268,7 +268,7 @@ tPAN_RESULT wiced_bt_pan_connect(BD_ADDR rem_bda, uint8_t src_role, uint8_t dst_
     /* The role combination is not valid */
     else
     {
-        WICED_BT_TRACE("Source %d and Destination roles %d are not valid combination",
+        WICED_BT_TRACE("Source %d and Destination roles %d are not valid combination\n",
             src_role, dst_role);
         return PAN_FAILURE;
     }
@@ -281,7 +281,7 @@ tPAN_RESULT wiced_bt_pan_connect(BD_ADDR rem_bda, uint8_t src_role, uint8_t dst_
         WICED_BT_TRACE ("PAN Connection failed because of no resources");
         return PAN_NO_RESOURCES;
     }
-    WICED_BT_TRACE ("wiced_bt_pan_connect() for BD Addr %x.%x.%x.%x.%x.%x",
+    WICED_BT_TRACE ("wiced_bt_pan_connect() for BD Addr %x.%x.%x.%x.%x.%x\n",
         rem_bda[0], rem_bda[1], rem_bda[2], rem_bda[3], rem_bda[4], rem_bda[5]);
     if (pcb->con_state == PAN_STATE_IDLE)
     {
@@ -312,7 +312,7 @@ tPAN_RESULT wiced_bt_pan_connect(BD_ADDR rem_bda, uint8_t src_role, uint8_t dst_
         return result;
     }
 
-    WICED_BT_TRACE ("wiced_bt_pan_connect() current active role set to %d", src_role);
+    WICED_BT_TRACE ("wiced_bt_pan_connect() current active role set to %d\n", src_role);
     pan_cb.prv_active_role = pan_cb.active_role;
     pan_cb.active_role = src_role;
     *handle = pcb->handle;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021, Cypress Semiconductor Corporation (an Infineon company) or
+ * Copyright 2016-2022, Cypress Semiconductor Corporation (an Infineon company) or
  * an affiliate of Cypress Semiconductor Corporation.  All rights reserved.
  *
  * This software, including source code, documentation and related
@@ -182,14 +182,14 @@ void bnep_send_conn_req (tBNEP_CONN *p_bcb)
     BT_HDR  *p_buf;
     uint8_t   *p, *p_start;
 
-    WICED_BT_TRACE ("BNEP sending setup req with dst uuid %x",
+    WICED_BT_TRACE ("BNEP sending setup req with dst uuid %x\n",
                        p_bcb->dst_uuid.uu.uuid16);
 
     if ((p_buf = (BT_HDR *)GKI_getpoolbuf (BNEP_POOL_ID)) == NULL)
     {
         /* Close L2C connection and give close indication to PAN */
         /* TBD */
-        WICED_BT_TRACE ("BNEP - not able to send connection request");
+        WICED_BT_TRACE ("BNEP - not able to send connection request\n");
         return;
     }
 
@@ -468,12 +468,12 @@ void bnep_send_command_not_understood (tBNEP_CONN *p_bcb, uint8_t cmd_code)
 *******************************************************************************/
 void bnepu_check_send_packet (tBNEP_CONN *p_bcb, BT_HDR *p_buf)
 {
-    WICED_BT_TRACE ("BNEP - bnepu_check_send_packet for CID: 0x%x", p_bcb->l2cap_cid);
+    WICED_BT_TRACE ("BNEP - bnepu_check_send_packet for CID: 0x%x\n", p_bcb->l2cap_cid);
     if (p_bcb->con_flags & BNEP_FLAGS_L2CAP_CONGESTED)
     {
         if (p_bcb->xmit_q.count >= BNEP_MAX_XMITQ_DEPTH)
         {
-            WICED_BT_TRACE ("BNEP - congested, dropping buf, CID: 0x%x", p_bcb->l2cap_cid);
+            WICED_BT_TRACE ("BNEP - congested, dropping buf, CID: 0x%x\n", p_bcb->l2cap_cid);
             wiced_bt_free_buffer (p_buf);
         }
         else
@@ -712,19 +712,19 @@ void bnep_process_setup_conn_responce (tBNEP_CONN *p_bcb, uint8_t *p_setup)
     tBNEP_RESULT    resp;
     uint16_t          resp_code;
 
-    WICED_BT_TRACE ("BNEP received setup responce");
+    WICED_BT_TRACE ("BNEP received setup responce\n");
     /* The state should be either SETUP or CONNECTED */
     if (p_bcb->con_state != BNEP_STATE_CONN_SETUP)
     {
         /* Should we disconnect ? */
-        WICED_BT_TRACE ("BNEP - setup response in bad state %d", p_bcb->con_state);
+        WICED_BT_TRACE ("BNEP - setup response in bad state %d\n", p_bcb->con_state);
         return;
     }
 
     /* Check if we are the originator */
     if (!(p_bcb->con_flags & BNEP_FLAGS_IS_ORIG))
     {
-        WICED_BT_TRACE ("BNEP - setup response when we are not originator",
+        WICED_BT_TRACE ("BNEP - setup response when we are not originator\n",
                            p_bcb->con_state);
         return;
     }
@@ -756,7 +756,7 @@ void bnep_process_setup_conn_responce (tBNEP_CONN *p_bcb, uint8_t *p_setup)
     {
         if (p_bcb->con_flags & BNEP_FLAGS_CONN_COMPLETED)
         {
-            WICED_BT_TRACE ("BNEP - role change response is %d", resp_code);
+            WICED_BT_TRACE ("BNEP - role change response is %d\n", resp_code);
 
             /* Restore the earlier BNEP status */
             p_bcb->con_state = BNEP_STATE_CONNECTED;
@@ -778,7 +778,7 @@ void bnep_process_setup_conn_responce (tBNEP_CONN *p_bcb, uint8_t *p_setup)
         }
         else
         {
-            WICED_BT_TRACE ("BNEP - setup response %d is not OK", resp_code);
+            WICED_BT_TRACE ("BNEP - setup response %d is not OK\n", resp_code);
 
             wiced_bt_l2cap_disconnect_req(p_bcb->l2cap_cid);
             /* Tell the user if he has a callback */
@@ -823,13 +823,13 @@ uint8_t *bnep_process_control_packet (tBNEP_CONN *p_bcb, uint8_t *p, uint16_t *p
     control_type = *p++;
     *p_rem_len = *p_rem_len - 1;
 
-    WICED_BT_TRACE ("bnep_process_control_packet BNEP proc'ing control pkt p_rem_len %d, is_ext %d, ctrl_type %d",
+    WICED_BT_TRACE ("bnep_process_control_packet BNEP proc'ing control pkt p_rem_len %d, is_ext %d, ctrl_type %d\n",
                        *p_rem_len, is_ext, control_type);
 
     /* check for underflow */
     if (*p_rem_len > orig_rem_len)
     {
-        WICED_BT_TRACE ("BNEP - bad crl pkt header length : -x%04x", *p_rem_len);
+        WICED_BT_TRACE ("BNEP - bad crl pkt header length : -x%04x\n", *p_rem_len);
         *p_rem_len = 0;
         return NULL;
     }
@@ -837,7 +837,7 @@ uint8_t *bnep_process_control_packet (tBNEP_CONN *p_bcb, uint8_t *p, uint16_t *p
     switch (control_type)
     {
     case BNEP_CONTROL_COMMAND_NOT_UNDERSTOOD:
-        WICED_BT_TRACE ("BNEP Received Cmd not understood for ctl pkt type: %d", *p);
+        WICED_BT_TRACE ("BNEP Received Cmd not understood for ctl pkt type: %d\n", *p);
         p++;
         *p_rem_len = *p_rem_len - 1;
         break;
@@ -847,7 +847,7 @@ uint8_t *bnep_process_control_packet (tBNEP_CONN *p_bcb, uint8_t *p, uint16_t *p
         if (*p_rem_len < ((2 * len) + 1))
         {
             bad_pkt = TRUE;
-            WICED_BT_TRACE("Received BNEP_SETUP_CONNECTION_REQUEST_MSG with bad length");
+            WICED_BT_TRACE("Received BNEP_SETUP_CONNECTION_REQUEST_MSG with bad length\n");
             break;
         }
         if (!is_ext)
@@ -868,7 +868,7 @@ uint8_t *bnep_process_control_packet (tBNEP_CONN *p_bcb, uint8_t *p, uint16_t *p
         if (*p_rem_len < (len + 2))
         {
             bad_pkt = TRUE;
-            WICED_BT_TRACE("Received BNEP_FILTER_NET_TYPE_SET_MSG with bad length");
+            WICED_BT_TRACE("Received BNEP_FILTER_NET_TYPE_SET_MSG with bad length\n");
             break;
         }
         bnepu_process_peer_filter_set (p_bcb, p, len);
@@ -887,7 +887,7 @@ uint8_t *bnep_process_control_packet (tBNEP_CONN *p_bcb, uint8_t *p, uint16_t *p
         if (*p_rem_len < (len + 2))
         {
             bad_pkt = TRUE;
-            WICED_BT_TRACE ("BNEP Received Multicast Filter Set message with bad length");
+            WICED_BT_TRACE ("BNEP Received Multicast Filter Set message with bad length\n");
             break;
         }
         bnepu_process_peer_multicast_filter_set (p_bcb, p, len);
@@ -902,7 +902,7 @@ uint8_t *bnep_process_control_packet (tBNEP_CONN *p_bcb, uint8_t *p, uint16_t *p
         break;
 
     default :
-        WICED_BT_TRACE ("BNEP - bad ctl pkt type: %d", control_type);
+        WICED_BT_TRACE ("BNEP - bad ctl pkt type: %d\n", control_type);
         bnep_send_command_not_understood (p_bcb, control_type);
         if (is_ext)
         {
@@ -914,7 +914,7 @@ uint8_t *bnep_process_control_packet (tBNEP_CONN *p_bcb, uint8_t *p, uint16_t *p
 
     if(bad_pkt || (*p_rem_len > orig_rem_len)) /* Add check for underflow */
     {
-        WICED_BT_TRACE ("BNEP - bad ctl pkt length: 0x%04x", *p_rem_len);
+        WICED_BT_TRACE ("BNEP - bad ctl pkt length: 0x%04x\n", *p_rem_len);
         *p_rem_len = 0;
         return NULL;
     }
@@ -1252,7 +1252,7 @@ void bnep_sec_check_complete (BD_ADDR bd_addr, BOOLEAN trasnport, void *p_ref_da
     uint16_t          resp_code = BNEP_SETUP_CONN_OK;
     BOOLEAN         is_role_change;
 
-    WICED_BT_TRACE ("BNEP security callback returned result %d", result);
+    WICED_BT_TRACE ("BNEP security callback returned result %d\n", result);
     if (p_bcb->con_flags & BNEP_FLAGS_CONN_COMPLETED)
         is_role_change = TRUE;
     else
@@ -1261,7 +1261,7 @@ void bnep_sec_check_complete (BD_ADDR bd_addr, BOOLEAN trasnport, void *p_ref_da
     /* check if the port is still waiting for security to complete */
     if (p_bcb->con_state != BNEP_STATE_SEC_CHECKING)
     {
-        WICED_BT_TRACE ("BNEP Conn in wrong state %d when security is completed",
+        WICED_BT_TRACE ("BNEP Conn in wrong state %d when security is completed\n",
                            p_bcb->con_state);
         return;
     }
